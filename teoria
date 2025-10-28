@@ -1,0 +1,49 @@
+Cel zadania:
+Celem ćwiczenia jest zbadanie dokładności numerycznego wyznaczania pochodnej funkcji f(x) = ln(x) * sin(x) dla punktu x0 = 0.5, przy zmianie parametru h dla różnych typów zmiennoprzecinkowych.
+
+
+
+Wstęp teorytyczny:
+Z definicji pochodnej:
+f′(x)=h→0lim​hf(x+h)−f(x)​
+W metodach numerycznych nie możemy przejść do granicy, dlatego stosujemy skończoną wartość hhh.
+ Dzięki temu możemy obliczyć przybliżoną pochodną Dhf(x)D_h f(x)Dh​f(x), jednak taka aproksymacja wiąże się z błędem.
+Błąd całkowity numerycznej pochodnej ma dwa niezależne składniki:
+	E(h) = c1 * h + c2/h
+
+Błąd c1, tak zwany błąd obcięcia, wynika z zastosowania skończonego rozwinięcia Taylora. Po obliczeniach wykonanych na lekcji, dowiadujemy się, że ma on postać:
+
+	c1 ≈ ½ * ​f′′(x)	=>	c1 * h = ½ * ​f′′(x) * h
+
+Błąd ten rośnie liniowo w stosunku do h, a dla h >> h* (gdzie h* oznacza wartość optymalną h, dla której błąd E(h) osiąga najniższą wartość) składnik c1*h będzie dominujący.
+
+Drugim składnikiem jest tak zwany błąd zaokrąglenia c2. Komputer nie jest w stanie przechowywać informacji np: o nieskończonych rozwinięciach ułamków, ponieważ ma skończoną pamięć. W związku z tym, wszystkie obliczenia maszynowe są dokonywane z pewną precyzją. Dokładność zaokrągleń, może co najwyżej osiągać wartość εmach​​, stanowiącego bardzo małą liczbę reprezentującą najdokładniejsze zaokrąglenie możliwe dla komputera. Aby zapisać zaburzoną wartość:
+
+	D~h​f(x)=hf~​(x+h)−f~​(x)​
+rozpisujemy kolejno:
+zaburzenie f(x+h) = f(x+h) +  ε1 * f(x+h)
+zaburzenie f(x) = (1 + ε2) * f(x)
+
+gdzie ε1 i ε2 są błędami rzędu ε maszynowego 
+
+po podstawieniu do zaburzonej wartości Dhf(x) - f’(x), po paru przekształceniach możemy zdewfiniować błąd c2 w następującej postaci:
+	
+c2 = (ε1 * f(x) - ε2 * f(x)) / h
+
+Dla h<<h*, c2/h jest dominujące
+
+Funkcję, która będzie liczyła wartość błędu, Nazwijmy E(h), a będzie ona opisana wzorem:
+E(h) = |Dhf(x) - f’(x)|	=>	E(h) = ½|f’’(x)| * h + (2 * |f(x)| * ε) / h
+
+  
+Wartość bezwzględna znajduje się tu, ponieważ w ostatecznym wykresie funkcji będziemy poruszać się w skali logarytmicznej. Jest to skala wygodniejsza  znacznie wygodniejsza w tym wypadku, między innymi ze względu na ogromny zakres h (od 10**-16 do 10**-1. W ten sposób będzie można zobaczyć wyniki na jednym wykresie.
+
+Zatem: E(h) = c1 * h + c2 / h
+Aby znaleźć najniższą wartość błedu, liczymy pochodną funkcji E’(h), dla której otrzymujemy optymalne h*
+	h* = pierwiastek((4 * f(x) / f’’(x)) * ε)
+
+W zależności od dobrania parametru h, spodziewamy się, że na skali logarytmicznej błąd będzie liniowo malał dla h < h*, osiągnie swoje minimum, po czym zacznie rosnąć dla h > h*
+
+Część praktyczna:
+
+
