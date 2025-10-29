@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Funkcja i jej pochodna ---
+# Funkcja i jej pochodna
 def f(x):
     return np.log(x) * np.sin(x)
 
