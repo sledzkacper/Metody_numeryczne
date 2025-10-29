@@ -1,0 +1,47 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Funkcja i jej pochodna
+def f(x):
+    return np.log(x) * np.sin(x)
+
+def f_prime_exact(x):
+    return np.sin(x)/x + np.log(x)*np.cos(x)
+
+# Punkt, w którym liczymy pochodną 
+x0 = 0.5
+
+# Zakres h (kroki) 
+h = np.logspace(-16, -1, 200)  # dla zmiennej double wg teorii, precyzja to 15-16 cyfr znaczących po przecinku
+
+# Przybliżenie różnicą w przód
+D = (f(x0 + h) - f(x0)) / h
+
+# Rzeczywista pochodna
+f_exact = f_prime_exact(x0)
+
+# Wzór na funkcję E(h)
+E_h = np.abs(D - f_exact)
+
+# Wykres
+plt.figure(figsize=(8,6))
+plt.loglog(h, E_h, 'b-', label='Forward difference, double')
+plt.xlabel('h')
+plt.ylabel('E(h) = |Dhf(x) - f′(x)|')
+plt.title('Błąd numeryczny przybliżenia pochodnej - Forward difference')
+plt.grid(True, which='both')
+plt.legend()
+plt.show()
+
+# Obliczanie h*
+def f_second(x):
+    # f''(x) = 2*cos(x)/x - 2*sin(x)/x^2 - log(x)*sin(x)
+    return 2*np.cos(x)/x - 2*np.sin(x)/x**2 - np.log(x)*np.sin(x)
+
+# Epsilon maszynowy dla double
+eps = np.finfo(np.double).eps
+
+# Wzór na optymalne h*
+h_opt = np.sqrt(4 * abs(f(x0)) * eps / abs(f_second(x0)))
+
+print(f"h* = {h_opt:.3e}")
