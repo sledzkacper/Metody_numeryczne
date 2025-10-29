@@ -1,0 +1,48 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Funkcja i jej pochodna
+def f(x):
+    return np.log(x) * np.sin(x)
+
+def f_prime_exact(x):
+    return np.sin(x)/x + np.log(x)*np.cos(x)
+
+# Punkt obliczeń
+x0 = (0.5)
+
+# Zakres h (tylko dla float)
+h = np.logspace(-7, -1, 200, dtype=np.float32)  # float32 ma sensowny zakres do 10^-7
+
+
+# Forward difference (różnica w przód)
+D = (f(x0 + h) - f(x0)) / h
+
+# Dokładna pochodna
+f_exact = (f_prime_exact(x0))
+
+# Wzór na funkkcję E(h)
+E_h = np.abs(D - f_exact)
+
+# Wykres
+plt.figure(figsize=(8,6))
+plt.loglog(h, E_h, 'r-', label='Forward difference, float')
+plt.xlabel('h')
+plt.ylabel('E(h) = |Dhf(x) - f′(x)|')
+plt.title('Błąd numeryczny pochodnej - Forward difference')
+plt.grid(True, which='both')
+plt.legend()
+plt.show()
+
+# Obliczanie h*
+def f_second(x):
+    # f''(x) = 2*cos(x)/x - 2*sin(x)/x^2 - log(x)*sin(x)
+    return 2*np.cos(x)/x - 2*np.sin(x)/x**2 - np.log(x)*np.sin(x)
+
+# Epsilon maszynowy dla float
+eps = np.finfo(np.float32).eps  # ≈ 1.19e-07
+
+# Wzór na h*
+h_opt = np.sqrt(np.float32(4) * abs(f(x0)) * eps / abs(f_second(x0)))
+
+print(f"h* = {h_opt:.3e}")
