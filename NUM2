@@ -1,0 +1,55 @@
+import numpy as np
+
+# 1. Dane
+A1 = np.array([
+    [3.9460360379, 1.3139505541, -0.5340951420, -0.4164810256, -0.2831911250],
+    [1.3139505541, 3.0092086855, 0.6650971284, -0.4161219233, 0.6438327037],
+    [-0.5340951420, 0.6650971284, 2.1494580726, -0.1460458566, -0.4864939625],
+    [-0.4164810256, -0.4161219233, -0.1460458566, 2.2082999417, 0.2965844086],
+    [-0.2831911250, 0.6438327037, -0.4864939625, 0.2965844086, 3.6869972623]
+])
+
+A2 = np.array([
+    [2.9003978768, 0.3904207670, -1.2634778768, 0.7742284307, -0.2131476979],
+    [0.3904207670, 2.5824364769, 2.0260593154, 0.2571326089, 0.2066180403],
+    [-1.2634778768, 2.0260593154, 2.9897760292, 0.6701356583, -0.6529862854],
+    [0.7742284307, 0.2571326089, 0.6701356583, 6.5985829405, -0.6134467226],
+    [-0.2131476979, 0.2066180403, -0.6529862854, -0.6134467226, 1.9288066766]
+])
+
+b = np.array([0.1880075698, -4.4019091536, -2.0879196700, 1.6846410024, -3.9230632294])
+
+# 2. Rozwiązanie dla Ai y = b
+y1 = np.linalg.solve(A1, b)
+y2 = np.linalg.solve(A2, b)
+
+# 3. Zaburzenie
+zaburzenie = np.random.uniform(-1, 1, 5) * 1e-7
+norma = np.linalg.norm(zaburzenie)
+
+# 4. Rozwiązanie z zaburzonym wektorem
+y1_zaburzone = np.linalg.solve(A1, b + zaburzenie)
+y2_zaburzone = np.linalg.solve(A2, b + zaburzenie)
+
+# 5. Porównanie błędów
+error_1 = np.linalg.norm(y1_zaburzone - y1) / np.linalg.norm(y1)
+error_2 = np.linalg.norm(y2_zaburzone - y2) / np.linalg.norm(y2)
+
+# 6. Uwarunkowanie macierzy
+uwarunkowanie_1 = np.linalg.cond(A1)
+uwarunkowanie_2 = np.linalg.cond(A2)
+
+# 7. Wyniki
+print("Wyniki dla A1")
+print("y1 =", y1)
+print("norma zaburzenia b = ", norma)
+print("y1_zaburzone =", y1_zaburzone)
+print("błąd względny =", error_1)
+print("κ(A1) =", uwarunkowanie_1)
+
+print("Wyniki dla A2")
+print("y2 =", y2)
+print("norma zaburzenia b = ", norma)
+print("y2_zaburzone = ", y2_zaburzone)
+print("błąd względny =", error_2)
+print("κ(A2) =", uwarunkowanie_2)
