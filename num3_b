@@ -1,0 +1,77 @@
+import time
+import matplotlib.pyplot as plt
+
+def LU(N):
+    start = time.perf_counter()
+    u = []
+    Diagonala = []
+    l = []
+    b = []
+
+    for i in range (1,N + 1):
+
+        """Pętla na górną diagonalę u"""
+        if i < N:
+            u.append(0.1/i)
+        
+        """Pętla na diagonalę"""
+        Diagonala.append(1.012)
+
+        """Pętla na dolną diagonalę l"""
+        if i < N:
+            l.append(0.145 / (i ** 2))
+
+        """Pętla na wektor b"""
+        b.append((i ** 0.5))
+
+    
+    for i in range (1, N):
+        """Rozkład LU"""
+        if i < (N - 1):
+            l[i] = l[i] / Diagonala[i - 1]
+
+        Diagonala[i] = 1.012 - u[i - 1] * l[i - 1]
+
+
+    # a) Obliczanie Ax = b
+    y = [0] * N
+    y[0] = b[0]
+    for i in range (1, N):
+        """ ly = b"""
+        y[i] = b[i] - y[i - 1] * l[i-1] # l[i - 1] zamiast l[i], ponieważ w liście l jest o jeden mniej wyraz niż na diagonali. To samo z górną wstęgą u.
+
+    x = [0] * N
+
+    for i in reversed(range(N)):  # od N-1 do 0
+        """ ux = y"""
+        if i == N - 1:
+            x[i] = y[i] / Diagonala[i]
+        else:
+            x[i] = (y[i] - u[i] * x[i + 1]) / Diagonala[i]
+    
+    end = time.perf_counter()
+    return end - start
+
+# b) Określamy rozmiar N + wykres
+k = 1
+Nlist = []
+for i in range (1,101):
+    """Kolejne rozmiary N"""
+    k = i * 100
+    Nlist.append(k)
+
+czasy = []
+
+for N in Nlist:
+    czas = LU(N)
+    czasy.append(czas)
+    
+    print("N =", N, ", czas =", f"{czas:.6f}")
+
+plt.figure(figsize=(8,6))
+plt.plot(Nlist, czasy, 'o-', color='purple', linewidth=2, markersize=6)
+plt.xlabel('Rozmiar macierzy N')
+plt.ylabel('Czas obliczeń [s]')
+plt.title('Zależność czasu wykonania od rozmiaru macierzy N')
+plt.grid(True)
+plt.show()
