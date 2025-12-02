@@ -1,0 +1,90 @@
+#brudnopis
+
+
+d = 0.85
+N = 200
+"""Reprezentacja macierzy A i b"""
+A = []
+D = []
+U1 = []
+U2 = []
+b = []
+
+for i in range (1, N + 1):
+    D.append(d)
+    b.append(i)
+
+    if i < N:
+        U1.append(0.3)
+
+    if i < (N - 1):
+        U2.append(0.1)
+
+L1 = U1
+L2 = U2
+
+def jacobi(d):
+    """Metoda Jacobiego"""
+
+    x_stare = [0.0] * N
+    x_nowe = [0.0] * N
+
+    for k in range(1,1000):
+        for i in range(N):
+            suma = 0.0
+            if i >= 1:
+                suma += L1[i-1] * x_stare[i-1]
+            if i >= 2:
+                suma += L2[i-2] * x_stare[i-2]
+            if i < N-1:
+                suma += U1[i] * x_stare[i+1]
+            if i < N-2:
+                suma += U2[i] * x_stare[i+2]
+
+            x_nowe[i] = (b[i] - suma) / D[i]
+
+        # Obliczenie błędu
+        blad = sum(abs(x_nowe[i] - x_stare[i]) for i in range(N))
+        if blad < 1e-6:
+            print(f"Metoda Jacobiego: Zbieżność po {k+1} iteracjach , dla d = {d}")
+            break
+
+        # Skopiuj x_nowe → x_stare
+        for i in range(N):
+            x_stare[i] = x_nowe[i]
+
+    return x_nowe
+
+jacobi(d)
+
+def gauss_seidel(d):
+    """Metoda Gaussa–Seidla"""
+
+    x = [0.0] * N  # używamy tylko jednej listy, zamiast dwóch jak w Jacobim
+
+    for k in range(1, 5000):
+        blad = 0.0
+        for i in range(N):
+            suma = 0.0
+
+            # tu używamy "najświeższych" wartości
+            if i >= 1:
+                suma += L1[i-1] * x[i-1]  # już zaktualizowane
+            if i >= 2:
+                suma += L2[i-2] * x[i-2]
+            if i < N-1:
+                suma += U1[i] * x[i+1]    # jeszcze "stare"
+            if i < N-2:
+                suma += U2[i] * x[i+2]
+
+            x_now = (b[i] - suma) / D[i]
+            blad += abs(x_now - x[i])
+            x[i] = x_now  # natychmiast nadpisujemy
+
+        if blad < 1e-6:
+            print(f"Metoda Gaussa–Seidela: Zbieżność po {k+1} iteracjach (Gauss–Seidel), dla d = {d}")
+            break
+
+    return x
+
+gauss_seidel(d)
